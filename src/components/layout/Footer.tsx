@@ -1,15 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ArrowUp, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { mainNav, site } from '@/data/site';
 import { categories } from '@/data/categories';
 import { Logo } from '@/components/common/Logo';
 import { SocialLinks } from '@/components/common/SocialLinks';
-import { useLenis } from '@/components/common/SmoothScroll';
 import { Reveal } from '@/animations/Reveal';
 
 export function Footer() {
-  const lenis = useLenis();
-  const toTop = () => (lenis ? lenis.scrollTo(0, { duration: 1.6 }) : window.scrollTo({ top: 0, behavior: 'smooth' }));
   const year = new Date().getFullYear();
 
   return (
@@ -100,19 +97,11 @@ export function Footer() {
       </Reveal>
 
       <div className="border-t border-ivory/10">
-        <div className="container-x flex flex-col gap-4 py-7 text-xs text-ivory/50 md:flex-row md:items-center md:justify-between">
+        <div className="container-x flex flex-col gap-4 pb-24 pt-7 text-xs text-ivory/50 md:flex-row md:items-center md:justify-between md:pb-7 md:pr-24">
           <p>
             © {year} {site.name}. All rights reserved.
           </p>
-          <p className="max-w-md md:text-center">Product visuals are illustrative renders. Contact details shown are placeholders pending client confirmation.</p>
-          <button
-            type="button"
-            onClick={toTop}
-            className="group flex items-center gap-2 self-start uppercase tracking-[0.2em] hover:text-ivory md:self-auto"
-          >
-            Back to top
-            <ArrowUp aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-y-0.5" />
-          </button>
+          <p className="max-w-md md:text-center">Product photography supplied by the brand. Contact details shown are placeholders pending client confirmation.</p>
         </div>
       </div>
     </footer>

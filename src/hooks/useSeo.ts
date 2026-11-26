@@ -30,7 +30,7 @@ function setCanonical(href: string) {
 }
 
 /** Page-specific title, description, canonical and Open Graph / Twitter tags. */
-export function useSeo({ title, description, path, image = '/og-image.png', type = 'website' }: SeoOptions) {
+export function useSeo({ title, description, path, image = '/og-image.jpg', type = 'website' }: SeoOptions) {
   useEffect(() => {
     const fullTitle = title === site.name ? title : `${title} — ${site.name}`;
     const url = new URL(path, site.url).toString();

@@ -20,7 +20,7 @@ npm run preview    # serve the production build
 | `/about` | Company intro, brand story, vision & mission, values, manufacturing expertise, timeline |
 | `/products` | Catalogue with category filter + search (both synced to the URL, e.g. `/products?category=whole-spices&q=pepper`) |
 | `/products/:slug` | Product detail with interactive 3D pack (drag to rotate, pack-size aware label), ingredients, specs, related products |
-| `/ingredients` | 3D ingredient explorer + editorial spice index |
+| `/ingredients` | Ingredient explorer (photo + 3D study) + editorial spice index |
 | `/process` | Scroll-driven 3D storytelling — particles morph through the six manufacturing stages |
 | `/quality` | QC process, testing framework, certificate slots, batch traceability |
 | `/contact` | Validated contact form, contact details, map slot. `/contact?product=<slug>` pre-fills an enquiry |
@@ -49,6 +49,11 @@ src/
 ```
 
 ## 3D & performance
+
+- **Intro loader** (`components/common/IntroLoader.tsx`): styled after the client's reference video, like the banner — the Biryani Masala jar turning in pure CSS 3D (`Jar3D.tsx`) on a wooden log slice under warm light shafts, with the video's spice bursts and gold titles cycling behind it and a golden light trail. It needs no Three.js, so it shows instantly. The percentage tracks real work: fonts, the page's code chunk and — on `/` — the banner's code, textures and first rendered frame. Shorter on repeat visits; respects reduced motion.
+- **Ingredient photography** (homepage section + `/ingredients`): real ingredient photos cropped from the product photography (`public/images/ingredients` at 160/400/720 px, `scripts/crop-ingredient-images.cjs`), shown through shared components in `components/ingredients/IngredientVisuals.tsx` — layered arch frames that tilt toward the pointer with a moving glare — so each ingredient looks the same on both pages. The `/ingredients` explorer opens on the photo with a toggle to the procedural 3D study (“View in 3D” switches to it). Replace the image files (same names) to use dedicated ingredient photography.
+- **Pour transition** (homepage only): scrolling the banner lifts the jar, flings off the lid and tips it; masala spills from the mouth in 3D (`three/parts/PourSpray.tsx`), and a fixed 2D flow layer (`sections/home/SpiceFlow.tsx`, fed by `pourState.ts`) carries the stream past the banner onto the top edge of the next section, where it builds a mound with dust puffs. Scroll back up to reverse it. Off for reduced motion.
+- **Homepage banner** (`three/HeroScene.tsx`, parts in `three/parts/Film*.tsx`, look in `data/film.ts`): recreates the reference video — the gold-lid layered spice jar (label cut from a video frame, `public/images/film`, `scripts/build-film-assets.cjs`) drops onto a log slice, the lid lifts with steam and seals with a ring of gold light, then the video's eleven spice explosions bloom behind the jar in turn (with gold captions) while golden trails circle it, under god-rays, bokeh, smoke and spice dust.
 
 - All 3D geometry is **procedural** (no model downloads); lighting uses drei `Lightformer`s, so no HDR files are fetched.
 - `three` + R3F load **only** on pages that use them (lazy chunks). The initial load is React + app shell + CSS.
@@ -83,7 +88,7 @@ Nothing below was supplied by the client. Each item is visibly marked on the sit
 | Founding story, timeline years and milestones | `src/data/content.ts → timeline`, `src/pages/About.tsx` |
 | Facility, machinery and capacity details | `src/pages/About.tsx`, `src/pages/Process.tsx` |
 | Actual sourcing regions (traditional growing regions are shown instead) | `src/data/ingredients.ts` |
-| Product photography / final packaging artwork (current visuals are illustrative SVG and 3D renders, and are labelled as such) | `PackVisual`, `three/parts/Pouch.tsx` |
+| Product photography — **supplied** (`public/images/products`, WebP at 640/1200 px; group shot at 960/1600 px). Final pack sizes still to confirm; the optional 3D viewer on product pages remains an illustrative render | `src/data/images.ts`, `ProductPhoto` |
 | Production domain for canonical / OG URLs and `robots.txt` | `.env → VITE_SITE_URL`, `public/robots.txt` |
 
 ## Deployment

@@ -10,6 +10,7 @@ import { CTASection } from '@/components/sections/CTASection';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { ProductFilters } from '@/components/product/ProductFilters';
 import { Button } from '@/components/ui/Button';
+import { collectionImage } from '@/data/images';
 
 const isCategory = (v: string | null): v is CategoryId => !!v && categories.some((c) => c.id === v);
 
@@ -74,6 +75,25 @@ export default function Products() {
         accentWords={[2, 3]}
         breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Products' }]}
         description="Pure ground spices, heritage masala blends and hand-sorted whole spices — each one cleaned, dried and packed with care."
+        aside={
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+            className="relative aspect-[16/10] overflow-hidden shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-gold/25"
+          >
+            <img
+              src={collectionImage.src}
+              srcSet={collectionImage.srcSet}
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              width={collectionImage.width}
+              height={collectionImage.height}
+              alt="The full range of twelve spice jars arranged together"
+              {...{ fetchpriority: 'high' }}
+              className="h-full w-full object-cover"
+            />
+          </motion.div>
+        }
       />
 
       <section className="section-y bg-ivory !pt-0">

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { LogoMark } from './Logo';
+import { Jar3D } from './Jar3D';
+import { loaderJar } from '@/data/jars';
 import { cn } from '@/utils/cn';
 
 /** Full-viewport loader shown while a route chunk loads. */
@@ -7,10 +8,8 @@ export function PageLoader() {
   return (
     <div className="flex min-h-[100svh] items-center justify-center bg-burgundy-deep text-ivory" role="status" aria-live="polite">
       <div className="flex flex-col items-center gap-5">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}>
-          <LogoMark className="h-14 w-14" />
-        </motion.div>
-        <span className="eyebrow text-gold-light/80">Opening the spice room</span>
+        <Jar3D jar={loaderJar} size={84} spinSeconds={8} effects={false} />
+        <span className="eyebrow -mt-2 text-gold-light/80">Opening the spice room</span>
       </div>
     </div>
   );

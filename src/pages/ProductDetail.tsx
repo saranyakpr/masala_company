@@ -11,6 +11,8 @@ import { HeatMeter } from '@/components/ui/HeatMeter';
 import { PendingBadge } from '@/components/ui/PendingBadge';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ProductGrid } from '@/components/product/ProductGrid';
+import { ProductPhoto } from '@/components/product/ProductPhoto';
+import { productImage } from '@/data/images';
 import { SceneLoader } from '@/components/common/Loaders';
 import { CTASection } from '@/components/sections/CTASection';
 import { Reveal, RevealItem, Stagger } from '@/animations/Reveal';
@@ -30,6 +32,7 @@ export default function ProductDetail() {
 
 function ProductView({ product }: { product: Product }) {
   const [size, setSize] = useState(product.packSizes[1]?.label ?? product.packSizes[0].label);
+  const [view, setView] = useState<'photo' | '3d'>('photo');
   const category = getCategory(product.category);
   const related = getRelatedProducts(product, 4);
   const index = products.findIndex((p) => p.slug === product.slug);
@@ -40,6 +43,7 @@ function ProductView({ product }: { product: Product }) {
     title: product.name,
     description: `${product.name} (${product.localName}) — ${product.short}`,
     path: `/products/${product.slug}`,
+    image: productImage(product.slug).src,
     type: 'product',
   });
 
@@ -53,11 +57,43 @@ function ProductView({ product }: { product: Product }) {
           style={{ background: `radial-gradient(55% 60% at 30% 55%, ${product.palette.spice}55, transparent 70%)` }}
         />
         <div className="container-x relative grid gap-10 pb-16 pt-28 lg:grid-cols-12 lg:gap-14 lg:pb-24 lg:pt-32">
-          <div className="relative h-[26rem] sm:h-[34rem] lg:col-span-7 lg:h-[44rem]">
-            <Suspense fallback={<SceneLoader label="Rendering pack" />}>
-              <ProductViewer product={product} weight={size} />
-            </Suspense>
-            <p className="absolute left-0 top-0 text-[0.62rem] uppercase tracking-[0.2em] text-ivory/40">Illustrative 3D render · final packaging artwork pending</p>
+          <div className="lg:col-span-7">
+            <div className="relative mx-auto aspect-square w-full max-w-[44rem] overflow-hidden bg-ink shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]">
+              {view === 'photo' ? (
+                <motion.div
+                  key="photo"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1.1, ease: easePremium }}
+                  className="h-full w-full"
+                >
+                  <ProductPhoto product={product} priority sizes="(min-width: 1024px) 55vw, 100vw" />
+                </motion.div>
+              ) : (
+                <div className="h-full w-full bg-burgundy-deep">
+                  <Suspense fallback={<SceneLoader label="Rendering pack" />}>
+                    <ProductViewer product={product} weight={size} />
+                  </Suspense>
+                  <p className="absolute left-4 top-4 text-[0.6rem] uppercase tracking-[0.2em] text-ivory/45">Illustrative 3D render · drag to rotate</p>
+                </div>
+              )}
+              <div role="group" aria-label="Product view" className="absolute bottom-4 right-4 flex rounded-full bg-ink/70 p-1 text-xs backdrop-blur-sm">
+                {(['photo', '3d'] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setView(v)}
+                    aria-pressed={view === v}
+                    className={cn(
+                      'rounded-full px-4 py-2 uppercase tracking-[0.16em] transition-colors duration-300',
+                      view === v ? 'bg-gold text-ink' : 'text-ivory/75 hover:text-ivory',
+                    )}
+                  >
+                    {v === 'photo' ? 'Photo' : '3D view'}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="flex flex-col justify-center lg:col-span-5">

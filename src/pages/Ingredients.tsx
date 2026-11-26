@@ -8,7 +8,7 @@ import { products } from '@/data/products';
 import { PageHero } from '@/components/sections/PageHero';
 import { CTASection } from '@/components/sections/CTASection';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { SpiceMound } from '@/components/common/SpiceMound';
+import { IngredientArchCard, IngredientStage, IngredientThumb } from '@/components/ingredients/IngredientVisuals';
 import { SceneLoader } from '@/components/common/Loaders';
 import { useLenis } from '@/components/common/SmoothScroll';
 import { Reveal } from '@/animations/Reveal';
@@ -24,6 +24,7 @@ export default function Ingredients() {
     path: '/ingredients',
   });
   const [active, setActive] = useState(0);
+  const [view, setView] = useState<'photo' | '3d'>('photo');
   const current = ingredients[active];
   const explorerRef = useRef<HTMLElement>(null);
   const lenis = useLenis();
@@ -34,6 +35,7 @@ export default function Ingredients() {
 
   const viewIn3D = (i: number) => {
     setActive(i);
+    setView('3d');
     const el = explorerRef.current;
     if (!el) return;
     if (lenis) lenis.scrollTo(el, { offset: -20, duration: 1.4 });
@@ -65,28 +67,46 @@ export default function Ingredients() {
                   active === i ? 'border-gold bg-gold text-ink lg:bg-transparent lg:text-gold-light' : 'border-ivory/15 text-ivory/70 hover:text-ivory',
                 )}
               >
-                <span
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 rounded-full ring-1 ring-ivory/20"
-                  style={{ background: ing.color }}
-                />
+                <IngredientThumb ingredient={ing} active={active === i} size="responsive" />
                 <span className={cn('font-display text-base lg:text-2xl', active === i && 'lg:italic')}>{ing.name}</span>
               </button>
             ))}
           </div>
 
-          <div className="relative h-[22rem] sm:h-[28rem] lg:col-span-5 lg:h-[36rem]">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 rounded-full opacity-40 blur-3xl transition-colors duration-1000"
-              style={{ background: `radial-gradient(circle at 50% 60%, ${current.color}, transparent 60%)` }}
-            />
-            <Suspense fallback={<SceneLoader label="Preparing ingredient" />}>
-              <IngredientScene ingredient={current} />
-            </Suspense>
-            <p className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-[0.6rem] uppercase tracking-[0.2em] text-ivory/40">
-              Procedural 3D study · drag to rotate
-            </p>
+          <div className="relative lg:col-span-5">
+            {view === 'photo' ? (
+              <IngredientStage ingredient={current} index={active} total={ingredients.length} caption={false} className="pb-2 pt-6" />
+            ) : (
+              <div className="relative h-[22rem] sm:h-[28rem] lg:h-[36rem]">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 rounded-full opacity-40 blur-3xl transition-colors duration-1000"
+                  style={{ background: `radial-gradient(circle at 50% 60%, ${current.color}, transparent 60%)` }}
+                />
+                <Suspense fallback={<SceneLoader label="Preparing ingredient" />}>
+                  <IngredientScene ingredient={current} />
+                </Suspense>
+                <p className="pointer-events-none absolute inset-x-0 bottom-2 text-center text-[0.6rem] uppercase tracking-[0.2em] text-ivory/40">
+                  Procedural 3D study · drag to rotate
+                </p>
+              </div>
+            )}
+            <div role="group" aria-label="Ingredient view" className="mx-auto mt-6 flex w-fit rounded-full border border-ivory/15 bg-ink/40 p-1 text-xs backdrop-blur-sm">
+              {(['photo', '3d'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setView(v)}
+                  aria-pressed={view === v}
+                  className={cn(
+                    'rounded-full px-4 py-2 uppercase tracking-[0.16em] transition-colors duration-300',
+                    view === v ? 'bg-gold text-ink' : 'text-ivory/75 hover:text-ivory',
+                  )}
+                >
+                  {v === 'photo' ? 'Photo' : '3D study'}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="lg:col-span-4">
@@ -142,22 +162,12 @@ export default function Ingredients() {
             accentWords={[2, 3]}
             description="Growing regions are where each spice is traditionally cultivated in India — the client’s actual sourcing regions are to be confirmed."
           />
-          <ul className="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2 lg:mt-20">
+          <ul className="mt-16 grid gap-x-12 gap-y-20 md:grid-cols-2 lg:mt-24 lg:gap-x-20">
             {ingredients.map((ing, i) => (
-              <li key={ing.id}>
-                <Reveal delay={(i % 2) * 0.1} as="article" className="group">
-                  <div className="relative overflow-hidden bg-cream px-10 pb-6 pt-14">
-                    <div
-                      aria-hidden="true"
-                      className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-30"
-                      style={{ background: `radial-gradient(circle at 50% 80%, ${ing.color}, transparent 65%)` }}
-                    />
-                    <span className="absolute left-6 top-5 font-display text-sm italic text-ink/40">0{i + 1}</span>
-                    <div className="relative transition-transform duration-700 ease-[var(--ease-premium)] group-hover:scale-[1.04]">
-                      <SpiceMound color={ing.color} colorDeep={ing.colorDeep} label={ing.name} />
-                    </div>
-                  </div>
-                  <div className="mt-6 flex items-start justify-between gap-6">
+              <li key={ing.id} className={cn(i % 2 === 1 && 'md:mt-28')}>
+                <Reveal delay={(i % 2) * 0.1} as="article" className="group/card">
+                  <IngredientArchCard ingredient={ing} index={i} tone="light" shape="landscape" sizes="(min-width: 768px) 45vw, 90vw" />
+                  <div className="mt-12 flex items-start justify-between gap-6">
                     <div>
                       <h3 className="text-4xl">{ing.name}</h3>
                       <p className="mt-1 text-sm italic text-ink-soft/60">

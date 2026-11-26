@@ -13,6 +13,7 @@ import { SpiceMound } from '@/components/common/SpiceMound';
 import { Reveal, RevealItem, Stagger } from '@/animations/Reveal';
 import { ScrollRevealText } from '@/animations/ScrollRevealText';
 import { MaskReveal } from '@/animations/MaskReveal';
+import { rangeSquareImage } from '@/data/images';
 
 const expertise = [
   { title: 'Cleaning & grading', text: 'Removing stones, stems and dust, and grading whole spice for size and uniformity.' },
@@ -39,13 +40,29 @@ export default function About() {
         breadcrumb={[{ label: 'Home', to: '/' }, { label: 'About' }]}
         description="We believe spice should taste of itself. Everything we do — from choosing a lot to sealing a pack — is in service of that idea."
         aside={
-          <div className="relative mx-auto aspect-square w-full max-w-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+            className="group relative mx-auto aspect-square w-full max-w-md"
+          >
+            <div aria-hidden="true" className="absolute -inset-[6%] rounded-full bg-[radial-gradient(circle,rgba(201,154,62,0.35),transparent_65%)] blur-2xl" />
             <div aria-hidden="true" className="absolute inset-0 rounded-full border border-gold/30" />
-            <div aria-hidden="true" className="absolute inset-[8%] rounded-full border border-gold/15" />
-            <div className="absolute inset-x-[10%] bottom-[18%]">
-              <SpiceMound color="#e2a01b" colorDeep="#b8770c" label="turmeric" />
+            <div aria-hidden="true" className="jar3d-ring absolute -inset-[4%] rounded-full border border-dashed border-gold/25" />
+            <div className="absolute inset-[7%] overflow-hidden rounded-full ring-1 ring-gold/60 shadow-[0_40px_80px_-25px_rgba(0,0,0,0.85),inset_0_0_0_1px_rgba(255,236,200,0.1)]">
+              <img
+                src={rangeSquareImage.src}
+                srcSet={rangeSquareImage.srcSet}
+                sizes="(min-width: 1024px) 26rem, 85vw"
+                width={rangeSquareImage.width}
+                height={rangeSquareImage.height}
+                alt="The full range of spice jars with gold lids arranged on wooden risers"
+                className="h-full w-full object-cover transition-transform duration-[1400ms] ease-[var(--ease-premium)] group-hover:scale-[1.06]"
+              />
+              <div aria-hidden="true" className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_25%,rgba(255,236,200,0.18),transparent_45%),radial-gradient(circle_at_50%_50%,transparent_55%,rgba(38,6,11,0.55))]" />
             </div>
-          </div>
+            <div aria-hidden="true" className="absolute inset-[11%] rounded-full border border-gold-light/25" />
+          </motion.div>
         }
       />
 

@@ -4,6 +4,8 @@ import { AnimatePresence } from 'framer-motion';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { PageLoader } from '@/components/common/Loaders';
+import { IntroLoader } from '@/components/common/IntroLoader';
+import { BackToTop } from '@/components/common/BackToTop';
 import { useLenis } from '@/components/common/SmoothScroll';
 import { PageTransition } from '@/animations/PageTransition';
 
@@ -20,6 +22,7 @@ export function RootLayout() {
 
   return (
     <>
+      <IntroLoader />
       <a
         href="#main"
         className="fixed left-4 top-4 z-[80] -translate-y-24 rounded-full bg-gold px-5 py-3 text-sm font-semibold text-ink transition-transform focus:translate-y-0"
@@ -35,6 +38,7 @@ export function RootLayout() {
         </AnimatePresence>
       </main>
       <Footer />
+      <BackToTop />
     </>
   );
 }

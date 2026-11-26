@@ -9,6 +9,8 @@ interface SplitTextProps {
   delay?: number;
   /** Animate immediately on mount instead of when scrolled into view. */
   immediate?: boolean;
+  /** With `immediate`: hold the reveal until this becomes true (e.g. after an intro loader). */
+  play?: boolean;
   /** Words (by index) rendered in italic accent style. */
   accentWords?: number[];
   accentClassName?: string;
@@ -24,6 +26,7 @@ export function SplitText({
   as = 'h2',
   delay = 0,
   immediate = false,
+  play = true,
   accentWords = [],
   accentClassName = 'italic text-gold',
 }: SplitTextProps) {
@@ -37,7 +40,7 @@ export function SplitText({
       aria-label={text.replace(/\n/g, ' ')}
       variants={stagger(0.07, delay)}
       initial="hidden"
-      {...(immediate ? { animate: 'visible' } : { whileInView: 'visible', viewport: viewportOnce })}
+      {...(immediate ? { animate: play ? 'visible' : 'hidden' } : { whileInView: 'visible', viewport: viewportOnce })}
     >
       {lines.map((line, li) => (
         <span key={li} className="block" aria-hidden="true">

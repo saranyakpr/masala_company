@@ -148,6 +148,52 @@ html.lenis, html.lenis body { height: auto; }
 }
 .animate-marquee { animation: marquee 40s linear infinite; }
 
+/* CSS 3D jar (loader / fallback) */
+@keyframes jar3d-spin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes jar3d-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3.5%); } }
+@keyframes jar3d-shadow { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(0.84); opacity: 0.55; } }
+@keyframes jar3d-ring { to { transform: rotate(360deg); } }
+@keyframes jar3d-mote {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translate3d(12px, -160px, 0) scale(1.1); opacity: 0; }
+}
+.jar3d-spin { animation: jar3d-spin 12s linear infinite; will-change: transform; }
+.jar3d-float { animation: jar3d-float 4.2s ease-in-out infinite; }
+.jar3d-shadow { animation: jar3d-shadow 4.2s ease-in-out infinite; }
+.jar3d-ring { animation: jar3d-ring 28s linear infinite; }
+.jar3d-ring-rev { animation: jar3d-ring 44s linear infinite reverse; }
+.jar3d-mote { animation: jar3d-mote 5s ease-out infinite; }
+@keyframes loader-sheen { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.loader-sheen { animation: loader-sheen 1.6s ease-in-out infinite; }
+/* loader spice burst + golden light trail */
+@keyframes loader-burst-dot {
+  0% { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
+}
+@keyframes loader-burst-glow { 0% { transform: scale(0.3); opacity: 0; } 18% { opacity: 1; } 100% { transform: scale(1.1); opacity: 0.45; } }
+@keyframes loader-trail { to { stroke-dashoffset: -100; } }
+.loader-burst-dot { animation: loader-burst-dot 1.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.loader-burst-glow { animation: loader-burst-glow 1.5s ease-out both; }
+.loader-trail { animation: loader-trail 2.4s linear infinite; }
+
+/* Homepage ingredients: gentle float for the arch frames */
+@keyframes ing-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes ing-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.9; } 50% { transform: scaleX(0.86); opacity: 0.6; } }
+.ing-float { animation: ing-float 6s ease-in-out infinite; }
+.ing-shadow { animation: ing-shadow 6s ease-in-out infinite; }
+
+/* Homepage spice film: soft light shafts from the top-left, as in the reference video */
+@keyframes film-rays { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2.5deg); } }
+.film-rays {
+  background: repeating-conic-gradient(from 118deg at 12% -6%, rgba(255, 214, 150, 0) 0deg, rgba(255, 214, 150, 0.16) 2.2deg, rgba(255, 214, 150, 0) 5deg, rgba(255, 214, 150, 0) 9deg);
+  mask-image: radial-gradient(80% 75% at 18% 0%, #000 10%, transparent 75%);
+  filter: blur(7px);
+  transform-origin: 12% 0%;
+  animation: film-rays 14s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

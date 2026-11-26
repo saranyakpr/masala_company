@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { Product } from '@/types';
 import { getCategory } from '@/data/categories';
-import { PackVisual } from './PackVisual';
+import { ProductPhoto } from './ProductPhoto';
 import { HeatMeter } from '@/components/ui/HeatMeter';
 import { easePremium } from '@/animations/variants';
 import { cn } from '@/utils/cn';
@@ -34,25 +34,17 @@ export function ProductCard({ product, index = 0, tone = 'light' }: ProductCardP
       >
         <div
           className={cn(
-            'relative aspect-[4/5] overflow-hidden',
-            dark ? 'bg-burgundy' : 'bg-sand/60',
+            'relative aspect-square overflow-hidden',
+            dark ? 'bg-burgundy' : 'bg-earth-deep',
           )}
         >
-          {/* backdrop disc in the spice colour */}
-          <div
-            aria-hidden="true"
-            className="absolute left-1/2 top-[54%] aspect-square w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-2xl transition-all duration-700 ease-[var(--ease-premium)] group-hover:scale-125 group-hover:opacity-45"
-            style={{ background: product.palette.spice }}
+          <ProductPhoto
+            product={product}
+            className="transition-transform duration-[1200ms] ease-[var(--ease-premium)] group-hover:scale-[1.06]"
           />
-          <div className="absolute inset-x-[16%] bottom-[7%] top-[9%] transition-transform duration-700 ease-[var(--ease-premium)] group-hover:-translate-y-3 group-hover:rotate-[-2deg] group-hover:scale-[1.04]">
-            <PackVisual product={product} />
-          </div>
-          <span
-            className={cn(
-              'eyebrow absolute left-4 top-4 text-[0.62rem]',
-              dark ? 'text-ivory/60' : 'text-ink-soft/60',
-            )}
-          >
+          {/* soft vignette so the category chip stays legible on any photo */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-transparent" />
+          <span className="eyebrow absolute left-4 top-4 rounded-full bg-ink/55 px-3 py-1.5 text-[0.58rem] text-ivory/90 backdrop-blur-sm">
             {category?.name}
           </span>
           <span

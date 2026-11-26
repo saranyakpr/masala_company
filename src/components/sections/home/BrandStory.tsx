@@ -3,7 +3,37 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { SplitText } from '@/animations/SplitText';
 import { Reveal } from '@/animations/Reveal';
-import { SpiceMound } from '@/components/common/SpiceMound';
+import { productImage } from '@/data/images';
+import { ARCH } from '@/components/ingredients/IngredientVisuals';
+import { cn } from '@/utils/cn';
+
+/** Arch-framed product photo with gold offset outline, depth shadow and a gentle hover lift. */
+function StoryPhoto({ slug, label, className }: { slug: string; label: string; className?: string }) {
+  const img = productImage(slug);
+  return (
+    <div className={cn('group relative', className)}>
+      <div aria-hidden="true" className="absolute inset-0 border border-gold/60" style={{ ...ARCH, transform: 'translate(12px, 12px)' }} />
+      <div
+        className="relative aspect-[4/5] overflow-hidden bg-ink ring-1 ring-gold/50 shadow-[0_40px_70px_-30px_rgba(38,6,11,0.65)] transition-all duration-700 ease-[var(--ease-premium)] group-hover:-translate-y-2 group-hover:shadow-[0_55px_90px_-30px_rgba(38,6,11,0.75)]"
+        style={ARCH}
+      >
+        <img
+          src={img.src}
+          srcSet={img.srcSet}
+          sizes="(min-width: 1024px) 26vw, 55vw"
+          alt={label}
+          width={img.width}
+          height={img.height}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-[var(--ease-premium)] group-hover:scale-[1.06]"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-white/5" />
+        <div aria-hidden="true" className="absolute inset-2.5 border border-gold-light/30" style={ARCH} />
+      </div>
+    </div>
+  );
+}
 
 export function BrandStory() {
   const ref = useRef<HTMLElement>(null);
@@ -16,14 +46,14 @@ export function BrandStory() {
     <section ref={ref} className="grain section-y relative overflow-hidden bg-sand">
       <div className="container-x relative grid gap-16 lg:grid-cols-12 lg:items-center">
         <div className="relative order-2 h-[26rem] lg:order-1 lg:col-span-6 lg:h-[34rem]">
-          <motion.div style={{ y: y1 }} className="absolute left-0 top-6 w-[62%]">
-            <SpiceMound color="#b3221f" colorDeep="#7d1015" label="Kashmiri chilli" />
+          <motion.div style={{ y: y1 }} className="absolute left-0 top-0 z-10 w-[44%]">
+            <StoryPhoto slug="kashmiri-chilli-powder" label="Kashmiri Chilli Powder jar with dried red chillies" />
           </motion.div>
-          <motion.div style={{ y: y2 }} className="absolute right-0 top-28 w-[54%]">
-            <SpiceMound color="#e2a01b" colorDeep="#b8770c" label="turmeric" />
+          <motion.div style={{ y: y2 }} className="absolute right-0 top-16 z-0 w-[46%]">
+            <StoryPhoto slug="turmeric-powder" label="Turmeric Powder jar with fresh turmeric root" />
           </motion.div>
-          <motion.div style={{ y: y3 }} className="absolute bottom-0 left-[18%] w-[48%]">
-            <SpiceMound color="#b39a5c" colorDeep="#7e6a3a" label="coriander" />
+          <motion.div style={{ y: y3 }} className="absolute bottom-0 left-[24%] z-20 w-[40%]">
+            <StoryPhoto slug="coriander-powder" label="Coriander Powder jar with coriander seeds" />
           </motion.div>
         </div>
         <div className="order-1 lg:order-2 lg:col-span-6">

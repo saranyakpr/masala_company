@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { company } from '../../data/company'
 import { navLinks } from '../../data/content'
@@ -8,8 +10,31 @@ import { Logo } from '../ui/Logo'
 const year = new Date().getFullYear()
 
 /** Premium footer with a slow spice marquee. */
+/** Scroll distance (px) after which the Back to top button appears. */
+const SHOW_AFTER = 320
+
 export function Footer() {
   const marquee = [...spiceProducts, ...blendProducts].map((p) => p.name)
+  const [showTop, setShowTop] = useState(false)
+
+  // Show the Back to top button once the user has scrolled down a little; hide it at the top.
+  // Lenis drives the real window scroll, so the native scroll event covers both modes.
+  useEffect(() => {
+    let raf = 0
+    const update = () => {
+      raf = 0
+      setShowTop(window.scrollY > SHOW_AFTER)
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
 
   return (
     <footer className="relative z-20 overflow-hidden border-t border-cream/5 bg-[#080605] pt-16">
@@ -114,12 +139,30 @@ export function Footer() {
           <p>
             © {year} {company.name}. All rights reserved.
           </p>
-          <button onClick={() => scrollToTarget(0)} className="group flex items-center gap-3 uppercase tracking-[0.25em] transition-colors hover:text-cream">
-            Back to top
-            <svg viewBox="0 0 10 14" className="h-3 w-2.5 transition-transform duration-500 group-hover:-translate-y-1" aria-hidden>
-              <path d="M5 13V1M1 5l4-4 4 4" fill="none" stroke="currentColor" />
-            </svg>
-          </button>
+          {/* Back to top — round floating button, bottom-right once the page is scrolled. */}
+          {createPortal(
+            <button
+              onClick={() => scrollToTarget(0)}
+              aria-label="Back to top"
+              title="Back to top"
+              aria-hidden={!showTop}
+              tabIndex={showTop ? 0 : -1}
+              className={`group fixed right-5 z-[80] flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 bg-coal/85 text-cream shadow-[0_8px_24px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-colors hover:border-gold hover:bg-coal sm:right-8 ${
+                showTop ? '' : 'pointer-events-none'
+              }`}
+              style={{
+                bottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+                opacity: showTop ? 1 : 0,
+                transform: showTop ? 'translateY(0)' : 'translateY(0.75rem)',
+                transition: 'opacity 0.5s ease, transform 0.5s ease, background-color 0.3s ease, border-color 0.3s ease',
+              }}
+            >
+              <svg viewBox="0 0 10 14" className="h-4 w-3 transition-transform duration-500 group-hover:-translate-y-1" aria-hidden>
+                <path d="M5 13V1M1 5l4-4 4 4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+              </svg>
+            </button>,
+            document.body,
+          )}
         </div>
       </div>
     </footer>

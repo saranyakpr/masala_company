@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "react",
+    "oxc",
+    "typescript"
+  ],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "dist"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "src/components/three/**"
+      ],
+      "rules": {
+        "react/immutability": "off"
+      }
+    }
+  ]
+}

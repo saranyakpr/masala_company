@@ -1,27 +1,24 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import { fileURLToPath, URL } from 'node:url';
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  devtools: {
+    apply: 'serve',
   },
+  plugins: [react(), tailwindcss()],
   build: {
-    target: 'es2020',
+    target: 'es2022',
     chunkSizeWarningLimit: 1200,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        // Only isolate the heavy 3D stack; shared deps (react, scheduler…) stay where Rollup puts them,
-        // so the 3D chunks are fetched lazily with the pages that need them.
-        manualChunks(id) {
-          // React must be pinned explicitly, otherwise Rollup folds it (and scheduler) into the r3f chunk.
-          if (/node_modules\/(react|react-dom|scheduler|react-router|react-router-dom|@remix-run)\//.test(id)) return 'react';
-          if (id.includes('node_modules/three/')) return 'three';
-          return undefined;
+        codeSplitting: {
+          groups: [
+            { name: 'three', test: /node_modules[/\\](three|@react-three|three-stdlib|troika|maath|camera-controls)/ },
+            { name: 'motion', test: /node_modules[/\\](gsap|@gsap|lenis)/ },
+          ],
         },
       },
     },
   },
-});
+})
